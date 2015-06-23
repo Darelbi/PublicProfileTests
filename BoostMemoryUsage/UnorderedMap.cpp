@@ -20,12 +20,12 @@ public:
 	};
 
 	pointer allocate(size_type n, const void *hint=0){
-		   counter += n;
+		   counter += n*sizeof(T);
 			return std::allocator<T>::allocate(n, hint);
 	}
 
 	void deallocate(pointer p, size_type n){
-			counter -= n;
+			counter -= n*sizeof(T);
 			return std::allocator<T>::deallocate(p, n);
 	}
 	
@@ -59,7 +59,7 @@ int main( int argc, char ** argv) {
 
 	map_type m;
 
-	for (int i = 0; i < 1000 * 1000; i++) {
+	for (int i = 0; i < 5000000; i++) {
 			m.insert(std::make_pair(i, new data_type));
 	}   
 
@@ -68,7 +68,9 @@ int main( int argc, char ** argv) {
 			it = m.erase(it);
 	}   
 
-	std::cout << "allocated memory before returning " << countingAllocator< std::pair< const int, data_type*>> ::getAllocatedBytes() << std::endl;
+	std::cout << "allocated memory before returning " << 
+		countingAllocator< std::pair< const int, data_type*>> ::getAllocatedBytes() 
+		<< "bytes"<< std::endl;
 
 	return 0;
 }
